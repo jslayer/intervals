@@ -1,5 +1,5 @@
 /*
- * Simple setInterval manager
+ * Simple setInterval manager (https://github.com/jslayer/intervals)
  * Copyright 2012 Eugene Poltorakov (http://poltorakov.com)
  * Licensed under the MIT License: http://www.opensource.org/licenses/mit-license.php
  *
@@ -16,6 +16,7 @@
  * instance.stop() - stop instance
  * instance.lock() - lock instance (it's state couldn't be changed until unlock)
  * instance.unlock() - unlock instance
+ * instance.call() - immediately call the callback
  */
 var IntervalManger = (function(){
   var instances = {},
@@ -41,6 +42,9 @@ var IntervalManger = (function(){
             _started = true;
           }
           return this;
+        },
+        call: function() {
+          _callback.call(_scope, _options);
         },
         stop: function() {
           if (_started && !_locked) {
