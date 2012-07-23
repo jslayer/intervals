@@ -1,4 +1,4 @@
-* Simple setInterval manager
+Simple setInterval manager
 Copyright 2012 Eugene Poltorakov (http://poltorakov.com)
 Licensed under the MIT License: http://www.opensource.org/licenses/mit-license.php
 
