@@ -3,12 +3,12 @@
  * Copyright 2012 Eugene Poltorakov (http://poltorakov.com)
  * Licensed under the MIT License: http://www.opensource.org/licenses/mit-license.php
  *
- * IntervalManger.add(name, callback, delay, options, scope) - create timer instance
- * IntervalManger.remove(name) - remove timer instance
- * IntervalManger.get(name) - return timer instance by its name
- * IntervalManger.getAll() - return objects with all existing timers
- * IntervalManger.stopAll() - stops all unlocked timers
- * IntervalManger.startAll() - starts all unlocked timers
+ * IntervalManager.add(name, callback, delay, options, scope) - create timer instance
+ * IntervalManager.remove(name) - remove timer instance
+ * IntervalManager.get(name) - return timer instance by its name
+ * IntervalManager.getAll() - return objects with all existing timers
+ * IntervalManager.stopAll() - stops all unlocked timers
+ * IntervalManager.startAll() - starts all unlocked timers
  *
  * Instance methods:
  *
@@ -18,7 +18,7 @@
  * instance.unlock() - unlock instance
  * instance.call() - immediately call the callback
  */
-var IntervalManger = (function(){
+var IntervalManager = (function(){
   var instances = {},
     _instance = function() {
       var _name, _callback, _delay, _options, _scope,
