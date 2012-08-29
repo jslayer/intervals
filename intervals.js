@@ -2,7 +2,7 @@
  * Simple setInterval manager (https://github.com/jslayer/intervals)
  * Copyright 2012 Eugene Poltorakov (http://poltorakov.com)
  * Licensed under the MIT License: http://www.opensource.org/licenses/mit-license.php
- * @version 1.0.2
+ * @version 1.0.3
  *
  * IntervalManager.add({name, callback, delay, options, scope, method}) - create timer instance
  * IntervalManager.remove(name) - remove timer instance
@@ -12,8 +12,7 @@
  * IntervalManager.startAll() - starts all unlocked timers
  *
  * Note: by default method is `intervals`, but you can set this value to `timeout`;
- * This means that callback will retrieve back callback as last argument,
- * you should execute (with `true` argument) it in order to start new timeout;
+ * This means that callback will retrieve back callback as last argument;
  * This option is useful when callback execution time is much enough and we should wait until it finished
  * before starting new timer;
  *
@@ -27,7 +26,7 @@ var IntervalManager = (function(){
   var instances = {},
     _instance = function(options) {
       var _name, _callback, _delay, _options, _method, _scope,
-        _start, _timer = -1,
+        _start, _timer,
         args = _.values(arguments);
 
       _name     = options.name;
@@ -39,19 +38,17 @@ var IntervalManager = (function(){
 
       return {
         start: function(force) {
-          if (_timer == -1 || force) {
+          if (_timer != -1 || force) {
             switch(_method) {
               case 'interval':
                 _timer = setInterval(function() {
-                  _callback.call(_scope, _options);
+                  instances[_name].call();
                 }, _delay);
                 break;
               case 'timeout':
                 _timer = setTimeout(function() {
                   clearTimeout(_timer);
-                  var _args = _options;
-                  _args.push(instances[_name].start);
-                  _callback.apply(_scope, _args);
+                  instances[_name].call();
                 }, _delay)
                 break;
               default:
@@ -60,8 +57,16 @@ var IntervalManager = (function(){
           }
           return this;
         },
+        _start: function(){
+          instances[_name].start(true);
+        },
         call: function() {
-          _callback.call(_scope, _options);
+          var _args = _options;
+          if (_method == 'timeout') {
+            var _args = _.clone(_options);
+            _args.push(instances[_name]._start);
+          }
+          _callback.apply(_scope, _args);
           return this;
         },
         stop: function() {
@@ -108,7 +113,7 @@ var IntervalManager = (function(){
     },
     startAll: function() {
       _.each(instances, function(instance, key) {
-        instance.start();
+        instance._start();
       });
       return this;
     }
